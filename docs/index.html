@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Dash</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.6/p5.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.6/addons/p5.dom.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+	var dirt, wall, iron_wall;
+
+	var dim_x = 40;
+	var dim_y = 30;
+
+	var tiles = [];
+
+	/* function preload() {
+		console.log("Hey");
+		dirt = loadImage("pics/dirt.png");
+		wall = loadImage("pics/wall.png");
+		iron_wall = loadImage("pics/iron_wall.png");
+	} */
+
+	function setup() {
+		createCanvas(800, 600);
+
+		for (var i = 0; i < dim_x; i++) {
+			tile_row = [];
+			for (var j = 0; i < dim_y; j++) {
+				tile_row.push(Math.floor(random(5)));
+			}
+			tiles.push(tile_row);
+		}
+	}
+
+	function draw() {
+		background(0);
+		// draw_tiles();
+	}
+
+	function draw_tiles() {
+		for (var i = 0; i < dim_x; i++) {
+			for (var j = 0; i < dim_y; j++) {
+				var x = 50 * j;
+				var y = 50 * i;
+				switch (tiles[i][j]) {
+					case 1:
+						image(dirt, x, y);
+						break;
+					case 2:
+						image(wall, x, y);
+						break;
+					case 3:
+						image(iron_wall, x, y);
+						break;
+					case 4:
+						ellipse(x + 25, y + 25, 50, 50);
+						break;
+				}
+			}
+		}
+	}
+</script>
+</body>
+</html>

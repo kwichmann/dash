@@ -14,8 +14,10 @@
 
 	var tiles = [];
 
+	var a = 500;
+	var b = 500;
+
 	function preload() {
-		console.log("Hey");
 		dirt = loadImage("pics/dirt.png");
 		wall = loadImage("pics/wall.png");
 		iron_wall = loadImage("pics/iron_wall.png");
@@ -23,10 +25,11 @@
 
 	function setup() {
 		createCanvas(800, 600);
+			noStroke();
 
-		for (var i = 0; i < dim_x; i++) {
+		for (var i = 0; i < dim_y; i++) {
 			tile_row = [];
-			for (var j = 0; i < dim_y; j++) {
+			for (var j = 0; j < dim_x; j++) {
 				tile_row.push(Math.floor(random(5)));
 			}
 			tiles.push(tile_row);
@@ -35,12 +38,28 @@
 
 	function draw() {
 		background(0);
+		push();
+		translate(a, b);
 		draw_tiles();
+		pop();
+		a -= 1;
+		b -= 1;
 	}
 
 	function draw_tiles() {
-		for (var i = 0; i < dim_x; i++) {
-			for (var j = 0; i < dim_y; j++) {
+		// Draw edge
+		for (var i = -1; i < dim_x + 1; i++) {
+			image(iron_wall, i * 50, -50);
+			image(iron_wall, i * 50, dim_y * 50);
+		}
+		for (var i = 0; i < dim_y; i++) {
+			image(iron_wall, -50, i * 50);
+			image(iron_wall, dim_x * 50, i * 50);
+		}
+
+		// Draw cave
+		for (var i = 0; i < dim_y; i++) {
+			for (var j = 0; j < dim_x; j++) {
 				var x = 50 * j;
 				var y = 50 * i;
 				switch (tiles[i][j]) {
@@ -54,7 +73,10 @@
 						image(iron_wall, x, y);
 						break;
 					case 4:
+						fill(100);
 						ellipse(x + 25, y + 25, 50, 50);
+						fill(255);
+						ellipse(x + 12, y + 12, 8, 8);
 						break;
 				}
 			}

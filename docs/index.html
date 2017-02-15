@@ -4,23 +4,28 @@
 	<title>Dash</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.6/p5.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.6/addons/p5.dom.js"></script>
+
+	<script src="player.js"></script>
 </head>
 <body>
 <script type="text/javascript">
-	var dirt, wall, iron_wall;
+	var dirt, wall, iron_wall, gem;
 
 	var dim_x = 40;
 	var dim_y = 30;
 
 	var tiles = [];
 
-	var a = 500;
-	var b = 500;
+	var view_x = 1000;
+	var view_y = 750;
+
+	var player;
 
 	function preload() {
 		dirt = loadImage("pics/dirt.png");
 		wall = loadImage("pics/wall.png");
 		iron_wall = loadImage("pics/iron_wall.png");
+		gem = loadImage("pics/gem.png");
 	}
 
 	function setup() {
@@ -30,21 +35,30 @@
 		for (var i = 0; i < dim_y; i++) {
 			tile_row = [];
 			for (var j = 0; j < dim_x; j++) {
-				tile_row.push(Math.floor(random(5)));
+				tile_row.push(Math.floor(random(6)));
 			}
 			tiles.push(tile_row);
 		}
+
+		player = new Player(39, 29);
 	}
 
 	function draw() {
 		background(0);
 		push();
-		translate(a, b);
+		translate(-view_x, -view_y);
 		draw_tiles();
+		player.draw();
 		pop();
-		a -= 1;
-		b -= 1;
+
+		player.update();
+
+		var target_x = constrain(player.x * 50 - width * 0.5, -50, (dim_x + 1) * 50 - width);
+		var target_y = constrain(player.y * 50 - height * 0.5, -50, (dim_y + 1) * 50 - height);
+		view_x = lerp(view_x, target_x, 0.1);
+		view_y = lerp(view_y, target_y, 0.1);
 	}
+
 
 	function draw_tiles() {
 		// Draw edge
@@ -78,6 +92,8 @@
 						fill(255);
 						ellipse(x + 12, y + 12, 8, 8);
 						break;
+					case 5:
+						image(gem, x, y);
 				}
 			}
 		}

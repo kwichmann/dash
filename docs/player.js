@@ -38,27 +38,73 @@ function Player(x, y) {
 		}
 
 	this.input = function() {
+		if (keyIsDown(LEFT_ARROW)) {
+			this.move_left = true;
+		}
+		if (keyIsDown(RIGHT_ARROW)) {
+			this.move_right = true;
+		}
+		if (keyIsDown(UP_ARROW)) {
+			this.move_up = true;
+		}
+		if (keyIsDown(DOWN_ARROW)) {
+			this.move_down = true;
+		}
+	}
+
+	this.move = function() {
+		
+		// Calculate new tile (if any)
+		var delta_x = 0;
+		var delta_y = 0;
+
+		if (this.move_left) {
+			delta_x -= 1;
+		}
+		if (this.move_right) {
+			delta_x += 1;
+		}
+		if (this.move_up) {
+			delta_y -= 1;
+		}
+		if (this.move_down) {
+			delta_y += 1;
+		}
+
+		// No diagonal moves
+		if (delta_x !== 0) {
+			delta_y = 0;
+		}
+
+		// Get new tile position
+		var new_x = this.x + delta_x;
+		var new_y = this.y + delta_y;
+		
+		// Check edges and get new tile
+		if (new_x >= 0 && new_x < dim_x && new_y >= 0 && new_y < dim_y) {
+			var new_tile = tiles[new_x][new_y];	
+		} else {
+			var new_tile = 2;
+		}
+		
+
+		// Is movement allowed?
+		var move_possible = (new_tile !== 2 && new_tile !== 3 && new_tile !== 4);
+
+		if (move_possible) {
+			tiles[new_x][new_y] = 0;
+		}
+
+		if (move_possible && !keyIsDown(32)) {
+			this.x = new_x;
+			this.y = new_y;
+		}
+		
 		this.move_left = false;
 		this.move_right = false;
 		this.move_up = false;
 		this.move_down = false;
-		
-		if (keyIsDown(LEFT_ARROW)) {
-			this.x -= 1;
-			this.move_left = true;
-		}
-		if (keyIsDown(RIGHT_ARROW)) {
-			this.x += 1;
-			this.move_right = true;
-		}
-		if (keyIsDown(UP_ARROW)) {
-			this.y -= 1;
-			this.move_up = true;
-		}
-		if (keyIsDown(DOWN_ARROW)) {
-			this.y += 1;
-			this.move_down = true;
-		}
+		this.input();
 	}
 
 	this.draw = function() {

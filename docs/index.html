@@ -16,8 +16,11 @@
 
 	var tiles = [];
 
+	var game_speed = 5;
+	var timer = 0;
+
 	var view_x = 1000;
-	var view_y = 750;
+	var view_y = 1000;
 
 	var player;
 
@@ -32,15 +35,16 @@
 		createCanvas(800, 600);
 			noStroke();
 
-		for (var i = 0; i < dim_y; i++) {
+		for (var i = 0; i < dim_x; i++) {
 			tile_row = [];
-			for (var j = 0; j < dim_x; j++) {
+			for (var j = 0; j < dim_y; j++) {
 				tile_row.push(Math.floor(random(6)));
 			}
 			tiles.push(tile_row);
 		}
 
-		player = new Player(39, 29);
+		player = new Player(0, 0);
+		tiles[0][0] = 0;
 	}
 
 	function draw() {
@@ -53,6 +57,12 @@
 
 		player.update();
 
+		timer += 1;
+		if (timer >= game_speed) {
+			player.move();
+			timer = 0;
+		}
+
 		var target_x = constrain(player.x * 50 - width * 0.5, -50, (dim_x + 1) * 50 - width);
 		var target_y = constrain(player.y * 50 - height * 0.5, -50, (dim_y + 1) * 50 - height);
 		view_x = lerp(view_x, target_x, 0.1);
@@ -61,7 +71,7 @@
 
 
 	function draw_tiles() {
-		// Draw edge
+		// Draw edges
 		for (var i = -1; i < dim_x + 1; i++) {
 			image(iron_wall, i * 50, -50);
 			image(iron_wall, i * 50, dim_y * 50);
@@ -72,19 +82,19 @@
 		}
 
 		// Draw cave
-		for (var i = 0; i < dim_y; i++) {
-			for (var j = 0; j < dim_x; j++) {
-				var x = 50 * j;
-				var y = 50 * i;
+		for (var i = 0; i < dim_x; i++) {
+			for (var j = 0; j < dim_y; j++) {
+				var x = 50 * i;
+				var y = 50 * j;
 				switch (tiles[i][j]) {
 					case 1:
 						image(dirt, x, y);
 						break;
 					case 2:
-						image(wall, x, y);
+						image(iron_wall, x, y);
 						break;
 					case 3:
-						image(iron_wall, x, y);
+						image(wall, x, y);
 						break;
 					case 4:
 						fill(100);

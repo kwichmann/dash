@@ -16,7 +16,7 @@
 
 	var tiles = [];
 
-	var game_speed = 5;
+	var game_speed = 6;
 	var timer = 0;
 
 	var view_x = 1000;
@@ -38,13 +38,17 @@
 		for (var i = 0; i < dim_x; i++) {
 			tile_row = [];
 			for (var j = 0; j < dim_y; j++) {
-				tile_row.push(Math.floor(random(6)));
+				if (random() > .8) {
+					tile_row.push(Math.floor(random(6)));	
+				} else {
+					tile_row.push(1);
+				}				
 			}
 			tiles.push(tile_row);
 		}
 
 		player = new Player(0, 0);
-		tiles[0][0] = 0;
+		tiles[0][0] = -1;
 	}
 
 	function draw() {
@@ -59,6 +63,7 @@
 
 		timer += 1;
 		if (timer >= game_speed) {
+			update_tiles();
 			player.move();
 			timer = 0;
 		}
@@ -70,23 +75,20 @@
 	}
 
 
-	function draw_tiles() {
-		// Draw edges
-		for (var i = -1; i < dim_x + 1; i++) {
-			image(iron_wall, i * 50, -50);
-			image(iron_wall, i * 50, dim_y * 50);
+	function tile(x, y) {
+		if (x < 0 || x >= dim_x || y < 0 || y >= dim_y) {
+			return 2;
 		}
-		for (var i = 0; i < dim_y; i++) {
-			image(iron_wall, -50, i * 50);
-			image(iron_wall, dim_x * 50, i * 50);
-		}
+		return tiles[x][y];
+	}
 
+	function draw_tiles() {
 		// Draw cave
-		for (var i = 0; i < dim_x; i++) {
-			for (var j = 0; j < dim_y; j++) {
+		for (var i = -1; i < dim_x + 1; i++) {
+			for (var j = -1; j < dim_y + 1; j++) {
 				var x = 50 * i;
 				var y = 50 * j;
-				switch (tiles[i][j]) {
+				switch (tile(i, j)) {
 					case 1:
 						image(dirt, x, y);
 						break;
@@ -107,6 +109,30 @@
 				}
 			}
 		}
+	}
+
+	function update_tiles() {
+		for (var i = 0; i < dim_x; i++) {
+			for (var j = dim_y; j >= 0; j--) {
+				var this_tile = tiles[i][j];
+				var below = tile(i, j + 1);
+				if (this_tile >= 4) {
+					if (below === 0) {
+						tiles[i][j + 1] = this_tile;
+						tiles[i][j] = 0;
+					} else if (below >= 3) {
+						if (tile(i - 1, j) === 0 && tile(i - 1, j + 1) === 0) {
+							tiles[i - 1][j] = this_tile;
+							tiles[i][j] = 0;
+						} else if (tile(i + 1, j) === 0 && tile(i + 1, j + 1) === 0) {
+							tiles[i + 1][j] = this_tile;
+							tiles[i][j] = 0;
+						} 
+					} 
+				}
+			}
+		}
+		
 	}
 </script>
 </body>

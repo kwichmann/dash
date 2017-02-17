@@ -71,40 +71,50 @@ function Player(x, y) {
 			delta_y += 1;
 		}
 
+		this.move_left = false;
+		this.move_right = false;
+		this.move_up = false;
+		this.move_down = false;
+
 		// No diagonal moves
 		if (delta_x !== 0) {
 			delta_y = 0;
+		}
+
+		// If no movement, exit
+		if (delta_x === 0 && delta_y == 0) {
+			return undefined;
 		}
 
 		// Get new tile position
 		var new_x = this.x + delta_x;
 		var new_y = this.y + delta_y;
 		
-		// Check edges and get new tile
-		if (new_x >= 0 && new_x < dim_x && new_y >= 0 && new_y < dim_y) {
-			var new_tile = tiles[new_x][new_y];	
-		} else {
-			var new_tile = 2;
-		}
+		// Get new tile
+		var new_tile = tile(new_x, new_y);
 		
-
 		// Is movement allowed?
 		var move_possible = (new_tile !== 2 && new_tile !== 3 && new_tile !== 4);
+
+		// Allow stone pushing
+		if (delta_x !== 0 && new_tile === 4) {
+			if (tile(this.x + 2 * delta_x, this.y) === 0 && random() > 0.75) {
+				tiles[new_x][new_y] = 0;
+				tiles[new_x + delta_x][new_y] = 4;
+				move_possible = true;
+			}
+		}
 
 		if (move_possible) {
 			tiles[new_x][new_y] = 0;
 		}
 
-		if (move_possible && !keyIsDown(32)) {
+		if (move_possible && !keyIsDown(16)) {
+			tiles[this.x][this.y] = 0;
+			tiles[new_x][new_y] = -1;
 			this.x = new_x;
 			this.y = new_y;
 		}
-		
-		this.move_left = false;
-		this.move_right = false;
-		this.move_up = false;
-		this.move_down = false;
-		this.input();
 	}
 
 	this.draw = function() {
@@ -135,9 +145,10 @@ function Player(x, y) {
 		ellipse(25, 12, 45, 20);
 
 		var eye_xoffset = 0;
-		if (this.move_left) {
+		if (keyIsDown(LEFT_ARROW)) {
 			eye_xoffset -= 4;
-		}if (this.move_right) {
+		}
+		if (keyIsDown(RIGHT_ARROW)) {
 			eye_xoffset += 4;
 		}
 

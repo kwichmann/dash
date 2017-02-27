@@ -1,6 +1,8 @@
 function Player(x, y) {
 	this.x = x;
 	this.y = y;
+	this.dx = 0;
+	this.dy = 0;
 
 	this.blinking = false;
 	this.eyelids = 0;
@@ -76,6 +78,12 @@ function Player(x, y) {
 		this.move_up = false;
 		this.move_down = false;
 
+		this.x += this.dx;
+		this.y += this.dy;
+	
+		this.dx = 0;
+		this.dy = 0;
+		
 		// No diagonal moves
 		if (delta_x !== 0) {
 			delta_y = 0;
@@ -94,31 +102,35 @@ function Player(x, y) {
 		var new_tile = tile(new_x, new_y);
 		
 		// Is movement allowed?
-		var move_possible = (new_tile !== 2 && new_tile !== 3 && new_tile !== 4);
+		var move_possible = new_tile.enterable;
 
 		// Allow stone pushing
-		if (delta_x !== 0 && new_tile === 4) {
-			if (tile(this.x + 2 * delta_x, this.y) === 0 && random() > 0.75) {
-				tiles[new_x][new_y] = 0;
-				tiles[new_x + delta_x][new_y] = 4;
+		if (delta_x !== 0 && new_tile.pushable) {
+			if (tile(this.x + 2 * delta_x, this.y).empty && random() > 0.75) {
+				tiles[new_x][new_y] = new Empty(new_x, new_y);
+				new_tile.vx = delta_x;
+				//new_tile.x = new_x + delta_x;
+				tiles[new_x + delta_x][new_y] = new_tile;
 				move_possible = true;
 			}
 		}
 
 		if (move_possible) {
-			tiles[new_x][new_y] = 0;
+			tiles[new_x][new_y] = new Empty(new_x, new_y);
 		}
 
 		if (move_possible && !keyIsDown(16)) {
-			tiles[this.x][this.y] = 0;
-			tiles[new_x][new_y] = -1;
-			this.x = new_x;
-			this.y = new_y;
+			tiles[this.x][this.y] = new Empty(this.x, this.y);
+			tiles[new_x][new_y] = new Empty(new_x, new_y);
+			this.dx = delta_x;
+			this.dy = delta_y;
 		}
 	}
 
 	this.draw = function() {
-		translate(this.x * 50, this.y * 50);
+		translate(
+			(this.x + this.dx * timer / game_speed) * 50,
+			(this.y + this.dy * timer / game_speed) * 50);
 
 		// Draw body
 		fill(0, 255, 0);

@@ -1,9 +1,10 @@
-var dirt, wall, iron_wall, gem;
+var dirt, wall, iron_wall, gem, explosion;
 
 var dim_x = 40;
 var dim_y = 30;
 
 var tiles = [];
+var next;
 
 var game_speed = 6;
 var timer = 0;
@@ -18,6 +19,7 @@ function preload() {
 	wall = loadImage("pics/wall.png");
 	iron_wall = loadImage("pics/iron_wall.png");
 	gem = loadImage("pics/gem.png");
+	explosion = loadImage("pics/explosion.png");
 }
 
 function setup() {
@@ -28,16 +30,32 @@ function setup() {
 		tile_row = [];
 		for (var j = 0; j < dim_y; j++) {
 			if (random() > .8) {
-				tile_row.push(Math.floor(random(6)));	
+				switch (Math.floor(random(5))) {
+					case 0:
+						tile_row.push(new Empty(i, j));
+						break;
+					case 1:
+						tile_row.push(new Wall(i, j));
+						break;
+					case 2:
+						tile_row.push(new IronWall(i, j));
+						break;
+					case 3:
+						tile_row.push(new Boulder(i, j));
+						break;
+					case 4:
+						tile_row.push(new Gem(i, j));
+						break;
+				}	
 			} else {
-				tile_row.push(1);
+				tile_row.push(new Dirt(i, j));
 			}				
 		}
 		tiles.push(tile_row);
 	}
 
 	player = new Player(0, 0);
-	tiles[0][0] = -1;
+	tiles[0][0] = new PlayerTile(0, 0);
 }
 
 function draw() {
@@ -53,12 +71,12 @@ function draw() {
 	timer += 1;
 	if (timer >= game_speed) {
 		update_tiles();
-		player.move();
+		player.move();		
 		timer = 0;
 	}
 
-	var target_x = constrain(player.x * 50 - width * 0.5, -50, (dim_x + 1) * 50 - width);
-	var target_y = constrain(player.y * 50 - height * 0.5, -50, (dim_y + 1) * 50 - height);
+	var target_x = constrain((player.x + player.dx * timer / game_speed) * 50 - width * 0.5, -50, (dim_x + 1) * 50 - width);
+	var target_y = constrain((player.y + player.dy * timer / game_speed) * 50 - height * 0.5, -50, (dim_y + 1) * 50 - height);
 	view_x = lerp(view_x, target_x, 0.1);
 	view_y = lerp(view_y, target_y, 0.1);
 }
@@ -66,7 +84,7 @@ function draw() {
 
 function tile(x, y) {
 	if (x < 0 || x >= dim_x || y < 0 || y >= dim_y) {
-		return 2;
+		return new IronWall(x, y);
 	}
 	return tiles[x][y];
 }
@@ -75,35 +93,22 @@ function draw_tiles() {
 	// Draw cave
 	for (var i = -1; i < dim_x + 1; i++) {
 		for (var j = -1; j < dim_y + 1; j++) {
-			var x = 50 * i;
-			var y = 50 * j;
-			switch (tile(i, j)) {
-				case 1:
-					image(dirt, x, y);
-					break;
-				case 2:
-					image(iron_wall, x, y);
-					break;
-				case 3:
-					image(wall, x, y);
-					break;
-				case 4:
-					fill(100);
-					ellipse(x + 25, y + 25, 50, 50);
-					fill(255);
-					ellipse(x + 12, y + 12, 8, 8);
-					break;
-				case 5:
-					image(gem, x, y);
-			}
+			tile(i, j).show();
 		}
 	}
 }
 
 function update_tiles() {
+	next = tiles.slice();
+
 	for (var i = 0; i < dim_x; i++) {
-		for (var j = dim_y; j >= 0; j--) {
+		for (var j = dim_y - 1; j >= 0; j--) {
 			var this_tile = tiles[i][j];
+			this_tile.move();
+			if (this_tile.falls) {
+				this_tile.fall();
+			}
+
 			var below = tile(i, j + 1);
 			if (this_tile >= 4) {
 				if (below === 0) {
@@ -120,5 +125,6 @@ function update_tiles() {
 				} 
 			}
 		}
-	}	
+	}
+	tiles = next.slice();	
 }

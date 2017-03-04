@@ -1,76 +1,94 @@
-function PlayerTile(x, y) {
-	Tile.call(this, x, y);
+class PlayerTile extends Tile {
+	constructor(x, y) {
+		super(x, y);
+	}
 }
 
-PlayerTile.prototype = Object.create(Tile.prototype);
+//PlayerTile.prototype = Object.create(Tile.prototype);
 
 // Overwrite show function, to display nothing
 PlayerTile.prototype.show = function() {}
 
 
-function Empty(x, y) {
-	Tile.call(this, x, y);
-	this.empty = true;
-	this.fallthrough = true;
-	this.enterable = true;	
+class Empty extends Tile {
+	constructor(x, y) {
+		super(x, y);
+		this.empty = true;
+		this.fallthrough = true;
+		this.enterable = true;
+	}
 }
 
-Empty.prototype = Object.create(Tile.prototype);
+//Empty.prototype = Object.create(Tile.prototype);
 
 // Overwrite show function, to display nothing
 Empty.prototype.show = function() {}
 
 
-function Dirt(x, y) {
-	Tile.call(this, x, y);
-	this.enterable = true;
+class Dirt extends Tile {
+	constructor(x, y) {
+		super(x, y);
+		this.enterable = true;
 
-	this.img = dirt;
+		this.img = dirt;
+	}
 }
 
-Dirt.prototype = Object.create(Tile.prototype);
+//Dirt.prototype = Object.create(Tile.prototype);
 
 
-function Wall(x, y) {
-	Tile.call(this, x, y);
-	this.slippery = true;
+class Wall extends Tile {
+	constructor(x, y) {
+		super(x, y);
 
-	this.img = wall;
+		this.slippery = true;
+
+		this.img = wall;
+	}
 }
 
-Wall.prototype = Object.create(Tile.prototype);
+// Wall.prototype = Object.create(Tile.prototype);
 
 
-function IronWall(x, y) {
-	Tile.call(this, x, y);
-	this.explodable = false;
+class IronWall extends Tile {
+	constructor(x, y) {
+		super(x, y);
 
-	this.img = iron_wall;
+		this.explodable = false;
+
+		this.img = iron_wall;
+	}
 }
 
-IronWall.prototype = Object.create(Tile.prototype);
+// IronWall.prototype = Object.create(Tile.prototype);
 
 
-function Gem(x, y) {
-	Tile.call(this, x, y);
-	this.falls = true;
-	this.slippery = true;
-	this.enterable = true;
+class Gem extends Tile{
+	constructor(x, y) {
+		super(x, y);
+		
+		this.falls = true;
+		this.slippery = true;
+		this.enterable = true;
 
-	this.img = gem;
+		this.img = gem;
+	}
 }
 
-Gem.prototype = Object.create(Tile.prototype);
+// Gem.prototype = Object.create(Tile.prototype);
 
 
-function Boulder(x, y) {
-	Tile.call(this, x, y);
-	this.falls = true;
-	this.slippery = true;
-	this.pushable = true;
+class Boulder extends Tile {
+	constructor(x, y) {
+		super(x, y);
+
+		this.falls = true;
+		this.slippery = true;
+		this.pushable = true;
+	}
 }
 
-Boulder.prototype = Object.create(Tile.prototype);
+// Boulder.prototype = Object.create(Tile.prototype);
 
 // Overwrite show function
 Boulder.prototype.show = function() {

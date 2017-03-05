@@ -121,7 +121,7 @@ function Player(x, y) {
 
 		if (move_possible && !keyIsDown(16)) {
 			tiles[this.x][this.y] = new Empty(this.x, this.y);
-			tiles[new_x][new_y] = new Empty(new_x, new_y);
+			tiles[new_x][new_y] = new PlayerTile(new_x, new_y);
 			this.dx = delta_x;
 			this.dy = delta_y;
 		}

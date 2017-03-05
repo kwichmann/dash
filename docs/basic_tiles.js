@@ -4,8 +4,6 @@ class PlayerTile extends Tile {
 	}
 }
 
-//PlayerTile.prototype = Object.create(Tile.prototype);
-
 // Overwrite show function, to display nothing
 PlayerTile.prototype.show = function() {}
 
@@ -18,8 +16,6 @@ class Empty extends Tile {
 		this.enterable = true;
 	}
 }
-
-//Empty.prototype = Object.create(Tile.prototype);
 
 // Overwrite show function, to display nothing
 Empty.prototype.show = function() {}
@@ -34,8 +30,6 @@ class Dirt extends Tile {
 	}
 }
 
-//Dirt.prototype = Object.create(Tile.prototype);
-
 
 class Wall extends Tile {
 	constructor(x, y) {
@@ -47,8 +41,6 @@ class Wall extends Tile {
 	}
 }
 
-// Wall.prototype = Object.create(Tile.prototype);
-
 
 class IronWall extends Tile {
 	constructor(x, y) {
@@ -59,8 +51,6 @@ class IronWall extends Tile {
 		this.img = iron_wall;
 	}
 }
-
-// IronWall.prototype = Object.create(Tile.prototype);
 
 
 class Gem extends Tile{
@@ -75,8 +65,6 @@ class Gem extends Tile{
 	}
 }
 
-// Gem.prototype = Object.create(Tile.prototype);
-
 
 class Boulder extends Tile {
 	constructor(x, y) {
@@ -87,8 +75,6 @@ class Boulder extends Tile {
 		this.pushable = true;
 	}
 }
-
-// Boulder.prototype = Object.create(Tile.prototype);
 
 // Overwrite show function
 Boulder.prototype.show = function() {

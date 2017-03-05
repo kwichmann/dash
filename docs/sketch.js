@@ -60,6 +60,7 @@ function setup() {
 
 function draw() {
 	background(0);
+
 	push();
 	translate(-view_x, -view_y);
 	draw_tiles();
@@ -99,8 +100,6 @@ function draw_tiles() {
 }
 
 function update_tiles() {
-	next = tiles.slice();
-
 	for (var i = 0; i < dim_x; i++) {
 		for (var j = dim_y - 1; j >= 0; j--) {
 			var this_tile = tiles[i][j];
@@ -109,7 +108,7 @@ function update_tiles() {
 				this_tile.fall();
 			}
 
-			var below = tile(i, j + 1);
+/*			var below = tile(i, j + 1);
 			if (this_tile >= 4) {
 				if (below === 0) {
 					tiles[i][j + 1] = this_tile;
@@ -123,8 +122,7 @@ function update_tiles() {
 						tiles[i][j] = 0;
 					} 
 				} 
-			}
+			}*/
 		}
-	}
-	tiles = next.slice();	
+	}	
 }
